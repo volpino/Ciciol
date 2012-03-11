@@ -21,6 +21,7 @@ class HandlerRunner(threading.Thread):
         else:
             self.handler = Handler()
         self.config = config
+        self.backends = [Backend() for Backend in self.config["backends"]]
         super(HandlerRunner, self).__init__()
 
     def stop(self):
@@ -37,8 +38,7 @@ class HandlerRunner(threading.Thread):
         while self.running:
             notifications = self.handler.get_notifications()
             if notifications:
-                for Backend in self.config["backends"]:
-                    backend = Backend()
+                for backend in self.backends:
                     backend.notify(notifications)
             try:
                 interval = self.handler.config["interval"]

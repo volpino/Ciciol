@@ -11,6 +11,7 @@ class DummyBackend(object):
     """
     Dummy backend for Ciciol
     """
+
     def notify(self, notifications):
         """
         Given a list of notifications notifies them to the user

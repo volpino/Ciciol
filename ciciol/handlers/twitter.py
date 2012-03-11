@@ -15,32 +15,50 @@ class TwitterHandler():
     """
     Handler for Twitter
     """
+    handler_config = "twitter"
+
     def __init__(self, config):
-        self.config = config.get_handler_config("twitter")
+        self.config = config
         self.auth = tweepy.OAuthHandler(CONSUMER_KEY,
                                         CONSUMER_SECRET)
         self.auth.set_access_token(self.config["access_key"],
                                    self.config["access_secret"])
         self.api = tweepy.API(self.auth)
-        self.config["author_include"] = [re.compile(regex) for regex in
-                                         self.config["author_include"]]
-        self.config["author_exclude"] = [re.compile(regex) for regex in
-                                         self.config["author_exclude"]]
-        self.config["text_include"] = [re.compile(regex) for regex in
-                                       self.config["text_include"]]
-        self.config["text_exclude"] = [re.compile(regex) for regex in
-                                       self.config["text_exclude"]]
+        self.config["author_include"] = self._regex_compile(
+            self.config["author_include"]
+        )
+        self.config["author_exclude"] = self._regex_compile(
+            self.config["author_exclude"]
+        )
+        self.config["text_include"] = self._regex_compile(
+            self.config["text_include"]
+        )
+        self.config["text_exclude"] = self._regex_compile(
+            self.config["text_exclude"]
+        )
         self.sent_notifications = []
 
-    def _check_filter(value, filter_):
+    def _regex_compile(self, regex_list):
+        """
+        Converts a list of regexes strings to a list of compiled regexes
+        """
+        if regex_list:
+            return [re.compile(regex) for regex in regex_list]
+        else:
+            return []
+
+    def _check_filter(self, value, filter_, exclude=False):
         """
         filter_ is an iterable of regex objects.
-        Returns True if value matches at least one of the regexes.
+        Returns True if value matches at least one of the regexes or
+        filter_ is empty
         """
+        if not filter_:
+            return True
         for regex in filter_:
             if regex.search(value) is not None:
-                return True
-        return False
+                return not exclude
+        return exclude
 
     def get_notifications(self):
         """
@@ -54,19 +72,20 @@ class TwitterHandler():
                 continue
 
             text = tweet.text
-            author = tweet.author.name
+            author = tweet.author.screen_name
             conf = self.config
 
-            no_filters = not any(conf["author_include"], conf["text_include"],
-                                 conf["author_exclude"], conf["text_exclude"])
+            filter_author = (
+                self._check_filter(author, conf["author_include"]) and
+                self._check_filter(author, conf["author_exclude"], True)
+            )
 
-            include = (self._check_filter(author, conf["author_include"]) or \
-                       self._check_filter(text, conf["text_include"]))
+            filter_text = (
+                self._check_filter(text, conf["text_include"]) and
+                self._check_filter(text, conf["text_exclude"], True)
+            )
 
-            exclude = (self._check_filter(author, conf["author_exclude"]) or \
-                       self._check_filter(author, conf["text_exclude"]))
-
-            if no_filters or (include and not exclude):
+            if (filter_author or filter_text):
                 results.append((author, text, tweet.author.profile_image_url))
                 self.sent_notifications.append(tweet.id)
 

@@ -1,3 +1,7 @@
+"""
+libnotify backend module for Ciciol
+"""
+
 import pynotify
 import tempfile
 from time import sleep
@@ -9,7 +13,13 @@ logger = logging.getLogger(__name__)
 
 
 class NotifyBackend(object):
+    """
+    libnotify backend for Ciciol
+    """
     def notify(self, notifications):
+        """
+        notify method
+        """
         for notification in notifications:
             sender = message = photo = None
             try:
@@ -26,12 +36,15 @@ class NotifyBackend(object):
                     f.write(photo_content.read())
                 logging.info("Saved... %s", tmp)
                 self._notify_one(sender, message, tmp)
-                sleep(10)
+                #sleep(10)
             else:
                 self._notify_one(sender, message)
-                sleep(10)
+                #sleep(10)
 
     def _notify_one(self, sender, message, photo="dialog-information"):
+        """
+        Sends one notification with libnotify
+        """
         pynotify.init(sender)
         notification = pynotify.Notification(
             sender,

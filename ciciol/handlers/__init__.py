@@ -1,5 +1,8 @@
 """
-ciciol.handler module
+Handlers for Ciciol
+
+Handlers are called to get notifications from some source of information
+(like Twitter, rss feeds, ...)
 """
 
 import threading
@@ -12,7 +15,11 @@ class HandlerRunner(threading.Thread):
     """
     def __init__(self, Handler, config):
         self.running = True
-        self.handler = Handler(config)
+        if hasattr(Handler, "handler_config"):
+            h_config = config.get_handler_config(Handler.handler_config)
+            self.handler = Handler(h_config)
+        else:
+            self.handler = Handler()
         self.config = config
         super(HandlerRunner, self).__init__()
 

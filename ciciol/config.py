@@ -5,6 +5,7 @@ Module for managing Ciciol's config files
 import logging
 import yaml
 import os
+from collections import defaultdict
 
 CONFIG_DEFAULT = {
     "handlers": {
@@ -24,7 +25,8 @@ logger = logging.getLogger(__name__)
 
 class Config(object):
     def __init__(self, config_file=None):
-        self._config = CONFIG_DEFAULT.copy()
+        self._config = defaultdict(lambda: None)
+        self._config.update(CONFIG_DEFAULT)
         self._config_file = config_file
 
     def autodiscover(self):
@@ -51,12 +53,13 @@ class Config(object):
                 self._config.update(yaml.load(f))
 
         self._config["handlers"] = [self._import_class(handler)
-                                   for handler in self._config["handlers"]]
+                                    for handler in self._config["handlers"]]
         self._config["backends"] = [self._import_class(backend)
                                     for backend in self._config["backends"]]
 
     def get_handler_config(self, handler):
-        h_config = self[handler]
+        h_config = defaultdict(lambda: None)
+        h_config.update(self[handler])
         if not "interval" in h_config:
             h_config["interval"] = self["default_interval"]
         return h_config

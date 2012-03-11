@@ -1,0 +1,15 @@
+handlers:
+- "ciciol.handlers.twitter.TwitterHandler"
+backends:
+- "ciciol.backends.notify.NotifyBackend"
+
+twitter:
+  author_include:
+  - "antirez"
+  - "davidesetti"
+  author_exclude:
+  - "repubblica"
+  text_include:
+  - "#python"
+  text_exclude:
+  - "#java"

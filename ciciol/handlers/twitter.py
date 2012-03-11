@@ -75,18 +75,20 @@ class TwitterHandler():
             author = tweet.author.screen_name
             conf = self.config
 
-            filter_author = (
-                self._check_filter(author, conf["author_include"]) and
-                self._check_filter(author, conf["author_exclude"], True)
+            filter_include = (
+                self._check_filter(author, conf["author_include"]) or
+                self._check_filter(text, conf["text_include"])
             )
 
-            filter_text = (
-                self._check_filter(text, conf["text_include"]) and
+            filter_exclude = (
+                self._check_filter(author, conf["author_exclude"], True) and
                 self._check_filter(text, conf["text_exclude"], True)
             )
 
-            if (filter_author or filter_text):
-                results.append((author, text, tweet.author.profile_image_url))
+            if (filter_include and filter_exclude):
+                results.append(
+                    (tweet.author.name, text, tweet.author.profile_image_url)
+                )
                 self.sent_notifications.append(tweet.id)
 
         return results

@@ -4,7 +4,6 @@ libnotify backend module for Ciciol
 
 import pynotify
 import tempfile
-from time import sleep
 import urllib
 import logging
 import os
@@ -25,7 +24,7 @@ class NotifyBackend(object):
             try:
                 sender, message, photo = notification
             except ValueError:
-                pass
+                sender, message = notification
             if photo is not None:
                 tempdir = tempfile.mkdtemp()
                 tmp = os.path.join(tempdir, photo.split("/")[-1])
@@ -36,10 +35,8 @@ class NotifyBackend(object):
                     f.write(photo_content.read())
                 logging.info("Saved... %s", tmp)
                 self._notify_one(sender, message, tmp)
-                #sleep(10)
             else:
                 self._notify_one(sender, message)
-                #sleep(10)
 
     def _notify_one(self, sender, message, photo="dialog-information"):
         """

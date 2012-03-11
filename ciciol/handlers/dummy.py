@@ -3,7 +3,7 @@ Dummy handler module for Ciciol
 """
 
 
-class TwitterHandler():
+class DummyHandler():
     """
     Dummy handler for Ciciol
     """

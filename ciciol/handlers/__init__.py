@@ -40,8 +40,11 @@ class HandlerRunner(threading.Thread):
                 for Backend in self.config["backends"]:
                     backend = Backend()
                     backend.notify(notifications)
-
-            for _ in range(self.handler.config["interval"]):
+            try:
+                interval = self.handler.config["interval"]
+            except (AttributeError, KeyError):
+                interval = self.config["default_interval"]
+            for _ in range(interval):
                 if not self.running:
                     break
                 sleep(1)

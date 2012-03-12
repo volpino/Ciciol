@@ -4,6 +4,9 @@ Twitter handler module for Ciciol
 
 import tweepy
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 # ok, this is plaintext. Any way of encrypt this would be completely useless.
 # i don't know why somebody would steal this but anyway don't be a dick.
@@ -19,10 +22,17 @@ class TwitterHandler():
 
     def __init__(self, config):
         self.config = config
+
         self.auth = tweepy.OAuthHandler(CONSUMER_KEY,
                                         CONSUMER_SECRET)
-        self.auth.set_access_token(self.config["access_key"],
-                                   self.config["access_secret"])
+
+        if self.config["access_key"] and self.config["access_secret"]:
+            self.authenticated = True
+            self.auth.set_access_token(self.config["access_key"],
+                                       self.config["access_secret"])
+        else:
+            self.authenticated = False
+
         self.api = tweepy.API(self.auth)
         self.config["author_include"] = self._regex_compile(
             self.config["author_include"]
@@ -66,7 +76,14 @@ class TwitterHandler():
         """
         results = []
 
-        timeline = self.api.home_timeline()
+        try:
+            if self.authenticated:
+                timeline = self.api.home_timeline()
+            else:
+                timeline = self.api.public_timeline()
+        except tweepy.TweepError, exc:
+            logger.warn("Twitter API error: %r", exc)
+            return []
         for tweet in timeline:
             if tweet.id in self.sent_notifications:
                 continue

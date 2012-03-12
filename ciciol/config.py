@@ -59,7 +59,8 @@ class Config(object):
 
     def get_handler_config(self, handler):
         h_config = defaultdict(lambda: None)
-        h_config.update(self[handler])
+        if self[handler]:
+            h_config.update(self[handler])
         if not "interval" in h_config:
             h_config["interval"] = self["default_interval"]
         return h_config

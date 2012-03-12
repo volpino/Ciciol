@@ -16,10 +16,13 @@ file and sends the notification data to one or more backends.
 
 What are backends?
 ------------------
+Backends are plugins for effectively notify the user using various techniques
+(desktop notifications, emails, IRC, ...).
 
 
 Writing a configuration file
 ----------------------------
+Writeme
 
 
 Contribute

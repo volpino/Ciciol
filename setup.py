@@ -13,6 +13,8 @@ long_description = open('README.md').read()
 
 setup(
     name='ciciol',
+    author='fox',
+    author_email='fox91 at anche no',
     version='0.1',
     description=('Lightweight and extremely customizable notifier. '
                  ' Designed to work with Twitter and much more'),

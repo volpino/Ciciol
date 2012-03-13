@@ -1,10 +1,9 @@
 import webbrowser
 import tweepy
-
 from ciciol.handlers.twitter import CONSUMER_KEY, CONSUMER_SECRET
 
 
-def twitter_access_token():
+def twitter():
     """
     Attempt to fetch a valid access token.
     """
@@ -19,7 +18,8 @@ def twitter_access_token():
     # Get access token
     token = auth.get_access_token(verifier=pin)
 
-    # Give user the access token
-    print 'Access token:'
-    print ' Key: %s' % token.key
-    print ' Secret: %s' % token.secret
+    print
+    print "Add this to your configuration file in the twitter section:"
+    print
+    print "access_key: %s" % token.key
+    print "access_secret %s" % token.secret

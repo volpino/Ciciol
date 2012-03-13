@@ -6,6 +6,7 @@ import logging
 import yaml
 import os
 from collections import defaultdict
+from ciciol.helpers import import_from_string
 
 CONFIG_DEFAULT = {
     "handlers": {
@@ -50,15 +51,6 @@ class Config(object):
         logging.warn("No config file found! Using default data")
         self.load()
 
-    def _import_class(self, path):
-        """
-        Imports class from string path
-        """
-        splitted = path.split(".")
-        cls = splitted[-1]
-        module = __import__(".".join(splitted[:-1]), fromlist=[cls])
-        return getattr(module, splitted[-1])
-
     def load(self, filepath=None):
         """
         Loads a config file from filepath
@@ -69,9 +61,9 @@ class Config(object):
                 self._config_file = filepath
                 self._config.update(yaml.load(f))
 
-        self._config["handlers"] = [self._import_class(handler)
+        self._config["handlers"] = [import_from_string(handler)
                                     for handler in self._config["handlers"]]
-        self._config["backends"] = [self._import_class(backend)
+        self._config["backends"] = [import_from_string(backend)
                                     for backend in self._config["backends"]]
 
     def get_handler_config(self, handler):

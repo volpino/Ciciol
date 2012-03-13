@@ -3,16 +3,28 @@
 import sys
 import logging
 from ciciol import Ciciol
+from ciciol.utils import setup
 
 if __name__ == '__main__':
     import optparse
     p = optparse.OptionParser(
         usage="usage: %prog [options]")
-    p.add_option('-v', action="store_true", dest="verbose", default=False,
-                 help="Verbose logging")
+    p.add_option('-v', '--verbose', action="store_true", dest="verbose",
+                 default=False, help="Verbose logging")
     p.add_option('-c', "--config", action="store", dest="config",
                  help="Config filename")
+    p.add_option('-s', "--setup", action="store", dest="setup",
+                 help="Lauch setup for given feature")
     opts, _ = p.parse_args()
+
+    if opts.setup:
+        try:
+            setup_func = getattr(setup, opts.setup)
+        except AttributeError:
+            p.error("Invalid setup feature")
+
+        setup_func()
+        sys.exit(0)
 
     if opts.verbose:
         logging.basicConfig(stream=sys.stderr,

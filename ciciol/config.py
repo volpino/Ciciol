@@ -35,7 +35,6 @@ class Config(object):
             for filename in filenames:
                 filepath = os.path.join(path, filename)
                 if os.path.exists(filepath) and os.path.isfile(filepath):
-                    logger.info("Loading config file %s", filepath)
                     self.load(filepath)
                     return
         logging.warn("No config file found! Using default data")
@@ -47,9 +46,10 @@ class Config(object):
         module = __import__(".".join(splitted[:-1]), fromlist=[cls])
         return getattr(module, splitted[-1])
 
-    def load(self, filename=None):
-        if filename:
-            with open(filename) as f:
+    def load(self, filepath=None):
+        if filepath:
+            logger.info("Loading config file %s", filepath)
+            with open(filepath) as f:
                 self._config.update(yaml.load(f))
 
         self._config["handlers"] = [self._import_class(handler)

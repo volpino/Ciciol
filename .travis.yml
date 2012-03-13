@@ -1,0 +1,12 @@
+rvm:
+- 1.9.3
+python:
+- 2.7
+branches:
+  only:
+    - develop
+before_script:
+- sudo apt-get update
+- sudo apt-get install python-notify
+script:
+- sudo python setup.py install

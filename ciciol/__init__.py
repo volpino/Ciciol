@@ -2,20 +2,17 @@ import logging
 from ciciol.config import Config
 from ciciol.handlers import HandlerRunner
 from time import sleep
-import sys
-
-logging.basicConfig(stream=sys.stderr,
-                    level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
 
 logger = logging.getLogger(__name__)
 
 
 class Ciciol(object):
-    def __init__(self):
+    def __init__(self, config_fn=None):
         self.config = Config()
-        self.config.autodiscover()
+        if config_fn:
+            self.config.load(config_fn)
+        else:
+            self.config.autodiscover()
 
     def run(self):
         threads = []

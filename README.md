@@ -6,6 +6,11 @@ notifier. Was designed to work with Twitter but its plugin-based structure
 makes it extendible for any kind of service.
 
 
+Getting Started
+---------------
+Writeme
+
+
 What are handlers?
 ------------------
 Handlers are plugins for handling sources of information and extract
@@ -28,6 +33,6 @@ Writeme
 Contribute
 ----------
 
-Writing a plugin for Ciciol is very easy! Start having a look at the existing
+Writing a plugin for Ciciòl is very easy! Start having a look at the existing
 plugins.
 Feel free to fork this repo, open issues and send pull requests

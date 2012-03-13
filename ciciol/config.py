@@ -71,8 +71,6 @@ class Config(object):
         """
         Returns config for handler
         """
-        if not "interval" in self[handler]:
-            self[handler]["interval"] = self["default_interval"]
         return HandlerConfig(self, handler)
 
     def __getitem__(self, key):
@@ -102,7 +100,16 @@ class HandlerConfig(object):
         """
         Returns the value for the requested key in handler config
         """
+        fallbacks = {
+            "interval": self._config["default_interval"]
+        }
+
         try:
             return self._config[self._handler][key]
         except KeyError:
-            return None
+            pass
+        try:
+            return fallbacks[key]
+        except KeyError:
+            pass
+        return None

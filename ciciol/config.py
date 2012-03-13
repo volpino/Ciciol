@@ -35,6 +35,7 @@ class Config(object):
         self._config = defaultdict(lambda: None)
         self._config.update(CONFIG_DEFAULT)
         self._config_file = None
+        self._config_file_updated = None
 
     def autodiscover(self):
         """
@@ -77,7 +78,8 @@ class Config(object):
         """
         Allows getting config data from config
         """
-        if self._config_file_updated < os.stat(self._config_file).st_mtime:
+        if self._config_file and \
+           self._config_file_updated < os.stat(self._config_file).st_mtime:
             logger.info("Config file changed! Reloading config file %s",
                         self._config_file)
             self.load(self._config_file)
@@ -106,7 +108,7 @@ class HandlerConfig(object):
 
         try:
             return self._config[self._handler][key]
-        except KeyError:
+        except (KeyError, TypeError):
             pass
         try:
             return fallbacks[key]

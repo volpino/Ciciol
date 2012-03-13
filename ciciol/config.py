@@ -60,6 +60,7 @@ class Config(object):
             with open(filepath) as f:
                 self._config_file = filepath
                 self._config.update(yaml.load(f))
+            self._config_file_updated = os.stat(filepath).st_mtime
 
         self._config["handlers"] = [import_from_string(handler)
                                     for handler in self._config["handlers"]]
@@ -70,15 +71,38 @@ class Config(object):
         """
         Returns config for handler
         """
-        h_config = defaultdict(lambda: None)
-        if self[handler]:
-            h_config.update(self[handler])
-        if not "interval" in h_config:
-            h_config["interval"] = self["default_interval"]
-        return h_config
+        if not "interval" in self[handler]:
+            self[handler]["interval"] = self["default_interval"]
+        return HandlerConfig(self, handler)
 
     def __getitem__(self, key):
         """
         Allows getting config data from config
         """
+        if self._config_file_updated < os.stat(self._config_file).st_mtime:
+            logger.info("Config file changed! Reloading config file %s",
+                        self._config_file)
+            self.load(self._config_file)
         return self._config[key]
+
+
+class HandlerConfig(object):
+    """
+    Config class for handlers
+    """
+    def __init__(self, config, handler):
+        """
+        Gets a Config object and the name of the section of the config file
+        from which retrieve information
+        """
+        self._config = config
+        self._handler = handler
+
+    def __getitem__(self, key):
+        """
+        Returns the value for the requested key in handler config
+        """
+        try:
+            return self._config[self._handler][key]
+        except KeyError:
+            return None

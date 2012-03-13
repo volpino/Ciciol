@@ -4,12 +4,17 @@ backends:
 - "ciciol.backends.notify.NotifyBackend"
 
 twitter:
+  interval: 60
+  access_key: ""
+  access_secret: ""
   author_include:
   - "antirez"
   - "davidesetti"
   author_exclude:
-  - "repubblica"
+  - "repubblicait"
   text_include:
   - "#python"
   text_exclude:
   - "#java"
+  search:
+  - "#wtf"

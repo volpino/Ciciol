@@ -34,28 +34,7 @@ class TwitterHandler():
             self.authenticated = False
 
         self.api = tweepy.API(self.auth)
-        self.config["author_include"] = self._regex_compile(
-            self.config["author_include"]
-        )
-        self.config["author_exclude"] = self._regex_compile(
-            self.config["author_exclude"]
-        )
-        self.config["text_include"] = self._regex_compile(
-            self.config["text_include"]
-        )
-        self.config["text_exclude"] = self._regex_compile(
-            self.config["text_exclude"]
-        )
         self.sent_notifications = []
-
-    def _regex_compile(self, regex_list):
-        """
-        Converts a list of regexes strings to a list of compiled regexes
-        """
-        if regex_list:
-            return [re.compile(regex) for regex in regex_list]
-        else:
-            return []
 
     def _check_filter(self, value, filter_, exclude=False):
         """
@@ -66,7 +45,9 @@ class TwitterHandler():
         if not filter_:
             return True
         for regex in filter_:
-            if regex.search(value) is not None:
+            match = re.search(regex, value)
+
+            if match is not None:
                 return not exclude
         return exclude
 
@@ -80,10 +61,11 @@ class TwitterHandler():
             if self.authenticated:
                 timeline = self.api.home_timeline()
             else:
-                timeline = self.api.public_timeline()[5:]
+                timeline = self.api.public_timeline()[:5]
         except tweepy.TweepError, exc:
             logger.warn("Twitter API error: %r", exc)
             return []
+
         for tweet in timeline:
             if tweet.id in self.sent_notifications:
                 continue
@@ -105,6 +87,16 @@ class TwitterHandler():
             if (filter_include and filter_exclude):
                 results.append(
                     (tweet.author.name, text, tweet.author.profile_image_url)
+                )
+                self.sent_notifications.append(tweet.id)
+
+        searches = self.config["search"] or []
+        for search in searches:
+            for tweet in self.api.search(search)[:10]:
+                if tweet.id in self.sent_notifications:
+                    continue
+                results.append(
+                    (tweet.from_user_name, tweet.text, tweet.profile_image_url)
                 )
                 self.sent_notifications.append(tweet.id)
 

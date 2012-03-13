@@ -27,7 +27,9 @@ Backends are plugins for effectively notify the user using various techniques
 
 Writing a configuration file
 ----------------------------
-Writeme
+First of all have look at the examples in examples/
+Basically in the configuration file you've to specify which handlers and
+backends you'd like to use plus optional handler specific configuration.
 
 
 Contribute

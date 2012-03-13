@@ -30,3 +30,4 @@ Contribute
 
 Writing a plugin for Ciciol is very easy! Start having a look at the existing
 plugins.
+Feel free to fork this repo, open issues and send pull requests

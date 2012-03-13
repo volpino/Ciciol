@@ -1,2 +1,6 @@
 *.swp
-*.pyc
+*.py[co]
+
+build/
+*egg-info/
+dist/

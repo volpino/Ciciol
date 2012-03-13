@@ -2,7 +2,7 @@
 libnotify backend module for Ciciol
 """
 
-import pynotify
+import sys
 import tempfile
 import urllib
 import logging
@@ -10,6 +10,12 @@ import os
 import shutil
 
 logger = logging.getLogger(__name__)
+
+try:
+    import pynotify
+except ImportError:
+    logger.error("Install pynotify to use this backend!")
+    sys.exit(1)
 
 
 class NotifyBackend(object):

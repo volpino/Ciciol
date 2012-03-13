@@ -80,7 +80,7 @@ class TwitterHandler():
             if self.authenticated:
                 timeline = self.api.home_timeline()
             else:
-                timeline = self.api.public_timeline()
+                timeline = self.api.public_timeline()[5:]
         except tweepy.TweepError, exc:
             logger.warn("Twitter API error: %r", exc)
             return []

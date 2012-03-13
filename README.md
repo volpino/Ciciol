@@ -8,9 +8,27 @@ makes it extendible for any kind of service.
 
 Getting Started
 ---------------
-Writeme
+* clone this repo
+  ```
+  git clone https://volpino@github.com/volpino/Ciciol.git
+  ```
+* install python-notify for libnotify support
+* install Ciciòl
+  ```
+  python setup.py install
+  ```
+* Write your own configuration file
+  * If you want to use twitter just copy the config file in examples/.
+    Get access_key and access_secret with:
+    ```
+    ciciol --setup twitter
+    ```
+* Launch ciciol
+  ```
+  ciciol
+  ```
 
-
+  
 What are handlers?
 ------------------
 Handlers are plugins for handling sources of information and extract

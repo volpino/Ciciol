@@ -8,15 +8,17 @@ makes it extendible for any kind of service.
 
 Getting Started
 ---------------
-* clone this repo
-  ```
-  git clone https://volpino@github.com/volpino/Ciciol.git
-  ```
-* install python-notify for libnotify support
-* install Ciciòl
-  ```
-  python setup.py install
-  ```
+* Install from PyPi:
+  * ``` pip install ciciol ``` or ``` easy_install ciciol ```
+* Install from git:
+  * ```
+    git clone https://volpino@github.com/volpino/Ciciol.git
+    ```
+  * ```
+    python setup.py install
+    ```
+* Install python-notify for libnotify support
+
 * Write your own configuration file
   * If you want to use twitter just copy the config file in examples/.
     Get access_key and access_secret with:

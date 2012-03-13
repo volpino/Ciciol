@@ -7,7 +7,13 @@ logger = logging.getLogger(__name__)
 
 
 class Ciciol(object):
+    """
+    Main class for Ciciol
+    """
     def __init__(self, config_fn=None):
+        """
+        Loads a config from config_fn or using autodiscover
+        """
         self.config = Config()
         if config_fn:
             self.config.load(config_fn)
@@ -15,7 +21,11 @@ class Ciciol(object):
             self.config.autodiscover()
 
     def run(self):
+        """
+        Launches handlers in separate threads
+        """
         threads = []
+
         for Handler in self.config["handlers"]:
             logger.info("Threading handler %s", Handler)
             runner = HandlerRunner(Handler, self.config)

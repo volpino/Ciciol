@@ -3,12 +3,11 @@ import tweepy
 
 from ciciol.handlers.twitter import CONSUMER_KEY, CONSUMER_SECRET
 
-"""
-Query the user for their consumer key/secret
-then attempt to fetch a valid access token.
-"""
 
-if __name__ == "__main__":
+def twitter_access_token():
+    """
+    Attempt to fetch a valid access token.
+    """
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 
     # Open authorization URL in browser

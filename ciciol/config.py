@@ -24,12 +24,22 @@ logger = logging.getLogger(__name__)
 
 
 class Config(object):
-    def __init__(self, config_file=None):
+    """
+    Class that handles configuration
+    """
+    def __init__(self):
+        """
+        __init__ for Config
+        """
         self._config = defaultdict(lambda: None)
         self._config.update(CONFIG_DEFAULT)
-        self._config_file = config_file
+        self._config_file = None
 
     def autodiscover(self):
+        """
+        Tries to autodiscover a config file, then it loads it.
+        If no config file is found the default config is loaded.
+        """
         filenames = CONFIG_FILENAMES + ["." + fn for fn in CONFIG_FILENAMES]
         for path in CONFIG_AUTODISCOVER_PATHS:
             for filename in filenames:
@@ -41,15 +51,22 @@ class Config(object):
         self.load()
 
     def _import_class(self, path):
+        """
+        Imports class from string path
+        """
         splitted = path.split(".")
         cls = splitted[-1]
         module = __import__(".".join(splitted[:-1]), fromlist=[cls])
         return getattr(module, splitted[-1])
 
     def load(self, filepath=None):
+        """
+        Loads a config file from filepath
+        """
         if filepath:
             logger.info("Loading config file %s", filepath)
             with open(filepath) as f:
+                self._config_file = filepath
                 self._config.update(yaml.load(f))
 
         self._config["handlers"] = [self._import_class(handler)
@@ -58,6 +75,9 @@ class Config(object):
                                     for backend in self._config["backends"]]
 
     def get_handler_config(self, handler):
+        """
+        Returns config for handler
+        """
         h_config = defaultdict(lambda: None)
         if self[handler]:
             h_config.update(self[handler])
@@ -66,4 +86,7 @@ class Config(object):
         return h_config
 
     def __getitem__(self, key):
+        """
+        Allows getting config data from config
+        """
         return self._config[key]

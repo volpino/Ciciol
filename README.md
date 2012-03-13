@@ -36,3 +36,8 @@ Contribute
 Writing a plugin for Ciciòl is very easy! Start having a look at the existing
 plugins.
 Feel free to fork this repo, open issues and send pull requests
+
+
+Development Status
+------------------
+[![Build Status](https://secure.travis-ci.org/volpino/Ciciol.png?branch=develop)](http://travis-ci.org/volpino/Ciciol)

@@ -14,6 +14,9 @@ class HandlerRunner(threading.Thread):
     Runner for threaded handlers
     """
     def __init__(self, Handler, config):
+        """
+        Receives an Handler and a config object
+        """
         self.running = True
         if hasattr(Handler, "handler_config"):
             h_config = config.get_handler_config(Handler.handler_config)

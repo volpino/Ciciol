@@ -8,6 +8,7 @@ import urllib
 import logging
 import os
 import shutil
+import base64
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,8 @@ class NotifyBackend(object):
             except ValueError:
                 sender, message = notification
             if photo is not None:
-                tmp = os.path.join(self.tempdir, photo.split("/")[-1])
+                photo_fn = base64.urlsafe_b64encode(photo)
+                tmp = os.path.join(self.tempdir, photo_fn)
                 if not os.path.exists(tmp):
                     logging.info("Saving image url %s to %s", photo, tmp)
                     photo_content = urllib.urlopen(photo)
@@ -59,4 +61,8 @@ class NotifyBackend(object):
             message,
             photo
         )
-        notification.show()
+        try:
+            notification.show()
+        except Exception:
+            logger.error("Error while notifying %s %s %s", sender, message,
+                         photo)

@@ -92,7 +92,7 @@ class TwitterHandler():
 
         searches = self.config["search"] or []
         for search in searches:
-            for tweet in self.api.search(search)[:10]:
+            for tweet in self.api.search(search):
                 if tweet.id in self.sent_notifications:
                     continue
                 results.append(

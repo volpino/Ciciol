@@ -84,7 +84,7 @@ class TwitterHandler():
                 self._check_filter(text, conf["text_exclude"], True)
             )
 
-            if (filter_include and filter_exclude):
+            if filter_include and filter_exclude:
                 results.append(
                     (tweet.author.name, text, tweet.author.profile_image_url)
                 )
@@ -92,7 +92,7 @@ class TwitterHandler():
 
         searches = self.config["search"] or []
         for search in searches:
-            for tweet in self.api.search(search)[:10]:
+            for tweet in self.api.search(search):
                 if tweet.id in self.sent_notifications:
                     continue
                 results.append(

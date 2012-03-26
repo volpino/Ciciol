@@ -68,11 +68,17 @@ class Config(object):
         self._config["backends"] = [import_from_string(backend)
                                     for backend in self._config["backends"]]
 
-    def get_handler_config(self, handler):
+    def get_handler_config(self, section):
         """
         Returns config for handler
         """
-        return HandlerConfig(self, handler)
+        return HandlerConfig(self, section)
+
+    def get_backend_config(self, section):
+        """
+        Returns config for backend
+        """
+        return BackendConfig(self, section)
 
     def __getitem__(self, key):
         """
@@ -86,32 +92,48 @@ class Config(object):
         return self._config[key]
 
 
-class HandlerConfig(object):
+class ConfigWrapper(object):
     """
-    Config class for handlers
+    Wrapper for specific config data
     """
-    def __init__(self, config, handler):
+    def __init__(self, config, section):
         """
         Gets a Config object and the name of the section of the config file
         from which retrieve information
         """
         self._config = config
-        self._handler = handler
+        self._section = section
+        self._fallbacks = {}
 
     def __getitem__(self, key):
         """
-        Returns the value for the requested key in handler config
+        Returns the value for the requested key in the config section
         """
-        fallbacks = {
-            "interval": self._config["default_interval"]
-        }
 
         try:
-            return self._config[self._handler][key]
+            return self._config[self._section][key]
         except (KeyError, TypeError):
             pass
         try:
-            return fallbacks[key]
+            return self._fallbacks[key]
         except KeyError:
             pass
         return None
+
+
+class HandlerConfig(ConfigWrapper):
+    """
+    Config class for handlers
+    """
+    def __init__(self, config, section):
+        super(HandlerConfig, self).__init__(config, section)
+        self._fallbacks = {
+            "interval": self._config["default_interval"]
+        }
+
+
+class BackendConfig(ConfigWrapper):
+    """
+    Config class for backends
+    """
+    pass

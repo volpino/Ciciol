@@ -17,15 +17,23 @@ class HandlerRunner(threading.Thread):
         """
         Receives an Handler and a config object
         """
+        super(HandlerRunner, self).__init__()
         self.running = True
+        self.config = config
+
         if hasattr(Handler, "handler_config"):
             h_config = config.get_handler_config(Handler.handler_config)
             self.handler = Handler(h_config)
         else:
             self.handler = Handler()
-        self.config = config
-        self.backends = [Backend() for Backend in self.config["backends"]]
-        super(HandlerRunner, self).__init__()
+
+        self.backends = []
+        for Backend in self.config["backends"]:
+            if hasattr(Backend, "backend_config"):
+                b_config = config.get_backend_config(Backend.backend_config)
+                self.backends.append(Backend(b_config))
+            else:
+                self.backends.append(Backend())
 
     def stop(self):
         """

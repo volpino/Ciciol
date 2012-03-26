@@ -84,7 +84,7 @@ class TwitterHandler():
                 self._check_filter(text, conf["text_exclude"], True)
             )
 
-            if (filter_include and filter_exclude):
+            if filter_include and filter_exclude:
                 results.append(
                     (tweet.author.name, text, tweet.author.profile_image_url)
                 )

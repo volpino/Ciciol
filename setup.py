@@ -15,7 +15,7 @@ setup(
     name='ciciol',
     author='fox',
     author_email='fox91 at anche no',
-    version='0.1',
+    version='0.1.1',
     description=('Lightweight and extremely customizable notifier. '
                  ' Designed to work with Twitter and much more'),
     url='http://github.com/volpino/Ciciol',

@@ -5,7 +5,7 @@ except ImportError:
     use_setuptools()
 
 install_requires = [
-    'tweepy==1.8',
+    'tweepy==3.0',
     'pyyaml',
 ]
 
